@@ -1,6 +1,5 @@
 package com.fc.projectboard.controller;
 
-import org.jboss.jandex.JandexAntTask;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -80,7 +79,7 @@ public class DataRestTest {
         //then
     }
 
-    @DisplayName("[api] 회원 관련 API는 일체 제공하지 않는다.")
+    @DisplayName("[api] 회원 관련 API 는 일체 제공하지 않는다.")
     @Test
     void givenNothing_whenRequestingUserAccounts_thenThrowsException() throws Exception {
         // Given

@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Getter
-@ToString(callSuper = true)
+@ToString
 @Table(indexes = {
         @Index(columnList = "userId"),
         @Index(columnList = "email", unique = true),
@@ -17,17 +17,22 @@ import java.util.Objects;
 })
 @Entity
 public class UserAccount extends AuditingFields {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter @Column(nullable = false, length = 50) private String userId;
-    @Setter @Column(nullable = false) private String userPassword;
+    @Setter @Column(nullable = false, length = 50)
+    private String userId;
+    @Setter @Column(nullable = false)
+    private String userPassword;
 
-    @Setter @Column(length = 100) private String email;
-    @Setter @Column(length = 100) private String nickname;
-    @Setter private String memo;
-
+    @Setter @Column(length = 100)
+    private String email;
+    @Setter @Column(length = 100)
+    private String nickname;
+    @Setter
+    private String memo;
 
     protected UserAccount() {}
 
@@ -38,7 +43,6 @@ public class UserAccount extends AuditingFields {
         this.nickname = nickname;
         this.memo = memo;
     }
-
     public static UserAccount of(String userId, String userPassword, String email, String nickname, String memo) {
         return new UserAccount(userId, userPassword, email, nickname, memo);
     }
@@ -54,5 +58,4 @@ public class UserAccount extends AuditingFields {
     public int hashCode() {
         return Objects.hash(id);
     }
-
 }
