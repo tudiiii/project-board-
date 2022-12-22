@@ -33,14 +33,15 @@ class JpaRepositoryTest {
     @Test
     public void givenTestData_whenSelecting_thenWorksFine() throws Exception {
         //given
+        long previousCount = articleRepository.count();
+        UserAccount userAccount = userAccountRepository.save(UserAccount.of("uno", "pw", null, null, null));
+        Article article = Article.of(userAccount, "new article", "new content", "#spring");
 
         //when
-        List<Article> articles = articleRepository.findAll();
+        articleRepository.save(article);
 
         //then
-        assertThat(articles)
-                .isNotNull()
-                .hasSize(123);
+        assertThat(articleRepository.count()).isEqualTo(previousCount + 1);
     }
 
     @DisplayName("insert 테스트")
