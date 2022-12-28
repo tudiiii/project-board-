@@ -26,8 +26,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -51,7 +50,7 @@ class ArticleControllerTest {
     @Test
     public void givenNothing_whenRequestingArticlesView_thenReturnsArticlesView() throws Exception {
         // Given
-        given(articleService.searchArticles(eq(null), eq(null), ArgumentMatchers.any(Pageable.class))).willReturn(Page.empty());
+        given(articleService.searchArticles(eq(null), eq(null), any(Pageable.class))).willReturn(Page.empty());
         given(paginationService.getPaginationBarNumbers(anyInt(), anyInt())).willReturn(List.of(0, 1, 2, 3, 4, 5));
 
         // When & Then
@@ -62,7 +61,7 @@ class ArticleControllerTest {
                 .andExpect(model().attributeExists("articles"))
                 .andExpect(model().attributeExists("paginationBarNumbers"))
                 .andExpect(model().attributeExists("searchTypes"));
-        then(articleService).should().searchArticles(eq(null), eq(null), ArgumentMatchers.any(Pageable.class));
+        then(articleService).should().searchArticles(eq(null), eq(null), any(Pageable.class));
         then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
     }
 
@@ -73,7 +72,7 @@ class ArticleControllerTest {
         SearchType searchType = SearchType.TITLE;
         String searchValue = "title";
 
-        given(articleService.searchArticles(eq(searchType), eq(searchValue), ArgumentMatchers.any(Pageable.class))).willReturn(Page.empty());
+        given(articleService.searchArticles(eq(searchType), eq(searchValue), any(Pageable.class))).willReturn(Page.empty());
         given(paginationService.getPaginationBarNumbers(anyInt(), anyInt())).willReturn(List.of(0, 1, 2, 3, 4, 5));
 
         // When & Then
@@ -85,7 +84,7 @@ class ArticleControllerTest {
                 .andExpect(view().name("articles/index"))
                 .andExpect(model().attributeExists("articles"))
                 .andExpect(model().attributeExists("searchTypes"));
-        then(articleService).should().searchArticles(eq(searchType), eq(searchValue), ArgumentMatchers.any(Pageable.class));
+        then(articleService).should().searchArticles(eq(searchType), eq(searchValue), any(Pageable.class));
         then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
     }
 
@@ -154,18 +153,57 @@ class ArticleControllerTest {
                 .andExpect(model().attributeExists("article"));
     }
 
-    @Disabled("구현 중")
+
     @DisplayName("[view][GET] 게시글 해스태그 검색 페이지 - 정상 호출")
     @Test
-    public void givenNothing_whenRequestingArticleHashtagSearchView_thenReturnsArticleHashtagSearchView() throws Exception {
+    public void givenNothing_whenRequestingArticleSearchHashtagView_thenReturnsArticleHashtagSearchView() throws Exception {
         // Given
+        List<String> hashtags = List.of("#java", "#spring", "boot");
+
+        given(articleService.searchArticlesViaHashtag(eq(null), any(Pageable.class))).willReturn(Page.empty());
+        given(paginationService.getPaginationBarNumbers(anyInt(), anyInt())).willReturn(List.of(1,2,3,4,5));
+        given(articleService.getHashtags()).willReturn(hashtags);
 
         // When & Then
         mvc.perform(get("/articles/search-hashtag"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 .andExpect(view().name("articles/search-hashtag"))
-                .andExpect(model().attributeExists("article"));
+                .andExpect(model().attribute("articles", Page.empty()))
+                .andExpect(model().attribute("hashtags", hashtags))
+                .andExpect(model().attributeExists("paginationBarNumbers"))
+                .andExpect(model().attribute("searchType", SearchType.HASHTAG));
+
+        then(articleService).should().searchArticlesViaHashtag(eq(null), any(Pageable.class));
+        then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
+        then(articleService).should().getHashtags();
+    }
+
+    @DisplayName("[view][GET] 게시글 해스태그 검색 페이지 - 정상 호출, 해시태그 입력")
+    @Test
+    public void givenHashTag_whenRequestingArticleSearchHashtagView_thenReturnsArticleHashtagSearchView() throws Exception {
+        // Given
+        String hashtag = "#java";
+        List<String> hashtags = List.of("#java", "#spring", "boot");
+
+        given(articleService.searchArticlesViaHashtag(eq(hashtag), any(Pageable.class))).willReturn(Page.empty());
+        given(paginationService.getPaginationBarNumbers(anyInt(), anyInt())).willReturn(List.of(1,2,3,4,5));
+        given(articleService.getHashtags()).willReturn(List.of("#java", "#spring", "boot"));
+
+        // When & Then
+        mvc.perform(get("/articles/search-hashtag")
+                        .queryParam("searchValue", hashtag))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+                .andExpect(view().name("articles/search-hashtag"))
+                .andExpect(model().attribute("articles", Page.empty()))
+                .andExpect(model().attribute("hashtags", hashtags))
+                .andExpect(model().attributeExists("paginationBarNumbers"))
+                .andExpect(model().attribute("searchType", SearchType.HASHTAG));
+
+        then(articleService).should().searchArticlesViaHashtag(eq(hashtag), any(Pageable.class));
+        then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
+        then(articleService).should().getHashtags();
     }
 
 
