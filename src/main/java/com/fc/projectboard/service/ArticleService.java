@@ -40,7 +40,6 @@ public class ArticleService {
             case HASHTAG -> articleRepository.findByHashtag("#" + searchKeyword,pageable).map(ArticleDto::from);
 
         };
-
     }
 
     @Transactional(readOnly = true)
