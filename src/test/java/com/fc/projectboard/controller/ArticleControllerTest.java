@@ -157,13 +157,13 @@ class ArticleControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 .andExpect(view().name("articles/search"))
-                .andExpect(model().attributeExists("article"));
+                .andExpect(view().name("article"));
     }
 
 
     @DisplayName("[view][GET] 게시글 해스태그 검색 페이지 - 정상 호출")
     @Test
-    public void givenNothing_whenRequestingArticleSearchHashtagView_thenReturnsArticleHashtagSearchView() throws Exception {
+    public void givenNothing_whenRequestingArticleSearchHashtagView_thenReturnsArticleSearchHashtagView() throws Exception {
         // Given
         List<String> hashtags = List.of("#java", "#spring", "boot");
 
@@ -188,7 +188,7 @@ class ArticleControllerTest {
 
     @DisplayName("[view][GET] 게시글 해스태그 검색 페이지 - 정상 호출, 해시태그 입력")
     @Test
-    public void givenHashTag_whenRequestingArticleSearchHashtagView_thenReturnsArticleHashtagSearchView() throws Exception {
+    public void givenHashtag_whenRequestingArticleSearchHashtagView_thenReturnsArticleSearchHashtagView() throws Exception {
         // Given
         String hashtag = "#java";
         List<String> hashtags = List.of("#java", "#spring", "boot");
