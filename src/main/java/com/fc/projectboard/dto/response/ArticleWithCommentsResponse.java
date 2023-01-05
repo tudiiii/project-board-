@@ -1,4 +1,4 @@
-package com.fc.projectboard.response;
+package com.fc.projectboard.dto.response;
 
 import com.fc.projectboard.dto.ArticleWithCommentsDto;
 
